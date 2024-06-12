@@ -5,36 +5,36 @@ version 15
 set matsize 8000
 set seed 648743
 
-*===============================================================================
-//Specify team paths (this is for the WB SummerU_2024 branch)
-*===============================================================================
-global main       	"C:\Users\AHema\OneDrive - CGIAR\Desktop\Poverty Mapping\Small area estimation\WB\SummerU_2024"
+//ssc install sae
+
+global main          "C:\Users\AHema\OneDrive - CGIAR\Desktop\Poverty Mapping\Small area estimation\Burkina Faso\Application of Fay-Herriot Model for Burkina Faso"
 global data       	"$main\00.Data"
+global figs        "$main\02_Area_level_models\04.graphics"
 
 
 
-use "$data\input\FHcensus_district.dta", clear
+use "$data\province_survey_ehcvm_bfa_2021.dta", clear
 
 
-local vars male head_age age depratio head_ghanaian ghanaian head_ethnicity1 head_ethnicity2 head_ethnicity3 head_ethnicity4 head_ethnicity5 head_ethnicity6 head_ethnicity7 head_ethnicity8 head_ethnicity9 head_birthplace1 head_birthplace2 head_birthplace3 head_birthplace4 head_birthplace5 head_birthplace6 head_birthplace7 head_birthplace8 head_birthplace9 head_birthplace10 head_birthplace11 head_religion1 head_religion2 head_religion3 head_religion4 christian  married noschooling head_schlvl1 head_schlvl2  head_schlvl4 head_schlvl5 employed head_empstatus1 head_empstatus2 head_empstatus3 head_empstatus4 head_empstatus5 head_empstatus6 head_empstatus8 head_empstatus9 employee internetuse fixedphone pc aghouse conventional  wall2 wall3  floor2 floor3 roof1 roof2 roof3  tenure1  tenure3 rooms bedrooms lighting2 lighting3 lighting4 water_drinking1  water_drinking3 water_drinking4  water_general2 water_general3 fuel1 fuel2 fuel3  toilet1  toilet3 toilet4 toilet5 solidwaste1 solidwaste2 solidwaste3 thereg1 thereg2 thereg3 thereg4 thereg5 thereg6 thereg7 thereg8 thereg9  workpop_primary
+local vars  hgender1  hage age hmstat1 hmstat2 hmstat3  hreligion1 hreligion2 hreligion3  hnation2   hethnie1 hethnie2 hethnie3 hethnie4 hethnie5 hethnie6 hethnie7 hethnie8 hethnie9 hethnie10 hethnie11 hethnie12 halfa1  heduc1 heduc2 heduc3  hdiploma1 hdiploma2 hdiploma3  hhandig1  hactiv7j1  hactiv7j4 hactiv7j5 hactiv12m1 hactiv12m2 hactiv12m3 hbranch1  hbranch3 hbranch4 hbranch5 hbranch6 hbranch7 hbranch8 hbranch9 hbranch10 hbranch11 hsectins1 hsectins2 hsectins3 hsectins4 hsectins5  hcsp1 hcsp2 hcsp3 hcsp4 hcsp5 hcsp6  hcsp9 hcsp10 sexe1  lien2 lien3 lien4 lien5  lien7 lien8 lien9 lien10  mstat1 mstat2 mstat3  religion1 religion2 religion3  ethnie1 ethnie2 ethnie3 ethnie4 ethnie5 ethnie6 ethnie7   nation2  mal30j1  aff30j1 aff30j2 aff30j3 aff30j4  arrmal1  hos12m1  couvmal1  handit1  alfa1  educ_scol1 educ_scol2 educ_scol3 educ_scol4 educ_scol5  educ_hi1 educ_hi2 educ_hi3 educ_hi4  diplome1 diplome2 diplome3 diplome4 diplome5 diplome6 diplome7  telpor1  internet1 activ7j1 activ7j2 activ7j3 activ7j4 activ12m1 activ12m2  branch1 branch2 branch3 branch4 branch5  sectins1 sectins2 sectins3 sectins4  emploi_sec1  sectins_sec1 sectins_sec2 sectins_sec3  csp_sec1 csp_sec2 csp_sec3 csp_sec4 csp_sec5 csp_sec6 csp_sec7  bank1  serviceconsult1 serviceconsult2 serviceconsult3  persconsult1 persconsult2 logem1 logem2 logem3  mur1  toit1  sol1  eauboi_ss1  eauboi_sp1  elec_ac1  elec_ur1  elec_ua1 ordure1  toilet1  eva_toi1  eva_eau1  tv1  fer1  frigo1  cuisin1  ordin1  decod1  car1  sh_id_demo1  sh_co_natu1 sh_co_eco1  sh_id_eco1  sh_co_vio1  
 
-egen workpop_primary = rsum(workpop_schlvl_4 workpop_schlvl_5)
+egen workpop_primary = rsum(csp1 csp2 csp3 csp4)
 
-//Normalize
+//Normalize all covariates
 foreach x of local vars{
 	cap sum `x'
 	cap replace `x' = (`x' - r(mean))/r(sd)
 }
 
 
-
+/*
 gen D = region*100
 replace D = D+district
 
 drop district 
 rename D district
-
-merge 1:1 district using "$data\direct_glss7.dta"
+*/
+merge 1:1 adm2_pcode using "$data\direct_survey_ehcvm_bfa_2021_province.dta"
 tab region, gen(thereg)
 unab hhvars: `vars'
 
@@ -47,7 +47,7 @@ gen logN = log(N)
 gen logN2 = logN^2
 gen logpop  = log(pop)
 gen logpop2 = logpop^2
-gen accra = region==3
+//gen accra = region==3
 //reg log_s2 logpop logpop2 i.accra#c.logN, r
 //reg log_s2 logpop logpop2 i.accra##c.logN, r
 gen share = log(N_hhsize/pop)
@@ -56,7 +56,7 @@ local phi2 = e(rmse)^2
 cap drop xb_fh
 predict xb_fh, xb
 predict residual,res
-sum xb_fh if res!=.,d
+sum xb_fh if residual!=.,d
 gen exp_xb_fh = exp(xb_fh)
 sum dir_fgt0_var
 local sumvar = r(sum)
@@ -110,7 +110,7 @@ fhsae dir_fgt0 `hhvars', revar(dir_fgt0_var) method(fh)
 	reg dir_fgt0 $postsign, r
 	gen touse = e(sample)
 	gen weight = 1
-	mata: ds = _f_stepvif("$postsign","weight",5,"touse") 
+	mata: ds =  _f_stepvif("$postsign","weight",5,"touse") 
 	
 	//ver abajo
 	global postvif `vifvar'
@@ -144,8 +144,8 @@ fhsae dir_fgt0 `hhvars', revar(dir_fgt0_var) method(fh)
 	}
 	
 	fhsae dir_fgt0 `hhvars', revar(dir_fgt0_var) method(reml) precision(1e-10)
-	local remove head_religion3
-	local hhvars: list hhvars - remove
+	//local remove head_religion3
+	//local hhvars: list hhvars - remove
 	global last `hhvars'
 	
 	fhsae dir_fgt0 workpop_primary $last, revar(dir_fgt0_var) method(chandra)
@@ -159,19 +159,22 @@ fhsae dir_fgt0 `hhvars', revar(dir_fgt0_var) method(fh)
 
 	//Check normal errors
 	predict xb
-	gen u_d = fh_fgt0 - xb
-		lab var u_d "FH area effects"
+	gen u_d = fh_fgt0 - xb //Random errors (area effects) and represent unexplained heterogeneity between areas, assumed to have a zero mean and constant variance
+	lab var u_d "FH area effects"
 	
 	histogram u_d, normal graphregion(color(white))
-	//graph export "$figs\Fig1_left.png", as(png) replace
+	graph export "$figs\Fig1_left.png", as(png) replace
 	qnorm u_d, graphregion(color(white))
+	graph export "$figs\u_d.png", as(png) replace
 	
-	gen e_d = dir_fgt0 - fh_fgt0
-		lab var e_d "FH errors"
+	gen e_d = dir_fgt0 - fh_fgt0 //The errors, e_d are assumed to be heteroskedastic
+	lab var e_d "FH errors"
 	
 	histogram e_d, normal graphregion(color(white))
-	//graph export "$figs\SAE Ghana 2017\3. Graphics\Fig1_right.png", as(png) replace
+	graph export "$figs\Fig1_right.png", as(png) replace
 	qnorm e_d, graphregion(color(white))
+	graph export "$figs\e_d.png", as(png) replace
 
-keep region district fh_fgt0 fh_fgt0_se
+	
+//keep region district fh_fgt0 fh_fgt0_se
 save "$data\FH_sae_poverty.dta", replace
