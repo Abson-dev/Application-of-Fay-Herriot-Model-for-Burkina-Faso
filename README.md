@@ -4,6 +4,8 @@
 
 The machine learning models and direct estimates for poverty headcount (FGT0) at non-representative area levels: region (admin level 1), provinces (admin level 2), and communes (admin level 3) were calculated by using aggregated means from the EHCVM-2021 at the household level (3227 households) and the Landsat 8-C2-SR 2022 georeferenced variables at the settlement level (70,238 settlements). Direct estimates were also calculated for every geographical level of disaggregation, including the ones where the EHCVM-2021 is representative (national, urban/rural, and regional level).
 
+# Estimates and maps
+
 ##  Direct and ML estimates at the administrative level 1 (region). 
 
 ![](05.Graphics/direct_region.png){fig-align="center"}
