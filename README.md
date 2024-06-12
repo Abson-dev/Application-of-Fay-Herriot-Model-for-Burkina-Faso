@@ -8,6 +8,13 @@ The machine learning models  and direct estimates for poverty headcount (FGT0) a
  
 
 
+![](05.Graphics/direct_region.png){fig-align="center"}
+
+
+
+![](05.Graphics/direct_province.png){fig-align="center"}
+
+
 ## References
 
 -	Corral, P., Henderson, H., and Segovia, S. (2023) Poverty Mapping in the Age of Machine Learning. <Forthcoming>.
