@@ -1,16 +1,24 @@
 # Application-of-Fay-Herriot-Model-for-Burkina-Faso
 
+## Data
+
+**EHCVM-2021**: 3227 observations for households that cover 13 regions, 44 provinces and 314 communes. 
+
+
+**Landsat 8-C2-SR 2022** : 70,238 observations for settlements that cover all the 13 regions, 44 provinces and 314 communes. 
+
+
 ## Poverty Mapping for Burkina Faso
 
 The machine learning models and direct estimates for poverty headcount (FGT0) at non-representative area levels: region (admin level 1), provinces (admin level 2), and communes (admin level 3) were calculated by using aggregated means from the EHCVM-2021 at the household level (3227 households) and the Landsat 8-C2-SR 2022 georeferenced variables at the settlement level (70,238 settlements). Direct estimates were also calculated for every geographical level of disaggregation, including the ones where the EHCVM-2021 is representative (national, urban/rural, and regional level).
 
-# Estimates and maps
+### Estimates and maps
 
-##  Direct and ML estimates at the administrative level 1 (region). 
+####  Direct and ML estimates at the administrative level 1 (region). 
 
 ![](05.Graphics/direct_region.png){fig-align="center"}
 
-##  Direct and ML estimates at the administrative level 2 (provinces). 
+####  Direct and ML estimates at the administrative level 2 (provinces). 
 
 ![](05.Graphics/direct_province.png){fig-align="center"}
 
