@@ -159,42 +159,49 @@ ssc install palettes, replace
 ssc install colrspace, replace
 graph set window fontface "Arial Narrow"
 
+*===============================================================================
+//Direct and XGBoost estimates  at the administrative level 1 
+*===============================================================================
 
 
-geoframe create nuts3 bfa_shp2.dta, replace shpfile(bfa_adm2_coord)
 
-frame change nuts3
+geoframe create admin1 bfa_shp1.dta, replace shpfile(bfa_adm1_coord)
+
+frame change admin1
 
 format  fgt0 %6.2f
 
 
 
 geoplot ///
- (area nuts3 fgt0)
+ (area admin1 fgt0, levels(10) color(viridis, reverse)) ///
+ , legend(pos(2) outside) ///
+ title("Estimated poverty rate in BFA regions", size(6) span) ///
+ subtitle("(Direct estimates)") ///
+ note("Source: EHCVM 2021 Survey", size(2))
 graph export "$figs\direct_region.png", as(png) replace
 
 
-geoplot ///
- (area nuts3 fgt0, levels(10) lcolor(gray) ) 
+geoframe create admin2 bfa_shp2.dta, replace shpfile(bfa_adm2_coord)
+
+frame change admin2
+
+format  fgt0 %6.2f 
  
 geoplot ///
- (area nuts3 fgt0, levels(10) color(viridis, reverse)) ///
+ (area admin2 fgt0, levels(10) color(viridis, reverse)) ///
+ , legend(pos(2) outside) ///
+ title("Estimated poverty rate in BFA provinces", size(6) span) ///
+ subtitle("(Direct estimates)") ///
+ note("Source: EHCVM 2021 Survey", size(2))
+ graph export "$figs\direct_province.png", as(png) replace
+
+ 
+ /*
+  //compass(pos(2)) sbar(length(.002) units(km)) ///
+ geoplot ///
+ (area admin2 fgt0, levels(10) color(viridis, reverse) label("@lb - @ub (N=@n)")) ///
  , legend(pos(2) outside) 
  
- 
- 
- 
- geoplot ///
- (area nuts3 fgt0, levels(10) color(viridis, reverse) label("@lb - @ub (N=@n)")) ///
- , legend(pos(2) outside) 
- 
- 
- 
- 
- 
- geoplot ///
- (area nuts3 fgt0, levels(10) color(viridis, reverse) label("@lb - @ub (N=@n)")) ///
- , legend(size(2.3)) 
- 
- 
- 
+*/
+
