@@ -43,6 +43,7 @@ global figs        "$main\05.Graphics"
 * ------------------------------------------------------------------------------
 
 /*
+spshape2dta WB_countries_Admin0_10m, replace saving(world)
 foreach format in shp dbf prj shx {
         copy "$data\input\bfa_admbnda_igb_20200323_em_v2_shp\bfa_admbnda_adm1_igb_20200323_em.`format'" "bfa_admbnda_adm1_igb_20200323_em.`format'"
     }
@@ -66,13 +67,13 @@ foreach format in shp dbf prj shx {
 * ------------------------------------------------------------------------------
 *     Map
 * ------------------------------------------------------------------------------
-use "$main\00.Data_preparation\bfa_shp1.dta",replace
+use "$main\00.Data_preparation\bfa_shp1.dta",clear
     spmap fgt0 using bfa_adm1_coord ///
         , ///
         id(_ID) ///
         fcolor(Reds) osize(.1) ocolor(black) ///
         clmethod(custom)  clbreaks(0 .2 .40 .6 .8 1)  ///
-        legend(position(8) ///
+        legend(position(4) ///
                region(lcolor(black)) ///
                label(1 "No data") ///
                label(2 "0% to 20%") ///
@@ -122,7 +123,7 @@ use "$main\00.Data_preparation\bfa_shp2.dta",replace
         id(_ID) ///
         fcolor(Reds) osize(.1) ocolor(black) ///
         clmethod(custom)  clbreaks(0 .2 .40 .6 .8 1)  ///
-        legend(position(8) ///
+        legend(position(4) ///
                region(lcolor(black)) ///
                label(1 "No data") ///
                label(2 "0% to 20%") ///
@@ -145,3 +146,55 @@ use "$main\00.Data_preparation\bfa_shp2.dta",replace
 
 
 //use "$data\direct_survey_ehcvm_bfa_2021_commune.dta",clear
+
+
+
+/////////////////////////////////////
+
+//https://medium.com/the-stata-guide/maps-in-stata-iii-geoplot-a764cf42688a
+ssc install geoplot, replace
+ssc install moremata, replace
+
+ssc install palettes, replace
+ssc install colrspace, replace
+graph set window fontface "Arial Narrow"
+
+
+
+geoframe create nuts3 bfa_shp2.dta, replace shpfile(bfa_adm2_coord)
+
+frame change nuts3
+
+format  fgt0 %6.2f
+
+
+
+geoplot ///
+ (area nuts3 fgt0)
+graph export "$figs\direct_region.png", as(png) replace
+
+
+geoplot ///
+ (area nuts3 fgt0, levels(10) lcolor(gray) ) 
+ 
+geoplot ///
+ (area nuts3 fgt0, levels(10) color(viridis, reverse)) ///
+ , legend(pos(2) outside) 
+ 
+ 
+ 
+ 
+ geoplot ///
+ (area nuts3 fgt0, levels(10) color(viridis, reverse) label("@lb - @ub (N=@n)")) ///
+ , legend(pos(2) outside) 
+ 
+ 
+ 
+ 
+ 
+ geoplot ///
+ (area nuts3 fgt0, levels(10) color(viridis, reverse) label("@lb - @ub (N=@n)")) ///
+ , legend(size(2.3)) 
+ 
+ 
+ 
