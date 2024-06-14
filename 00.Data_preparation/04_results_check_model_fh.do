@@ -7,50 +7,19 @@ global main          "C:\Users\AHema\OneDrive - CGIAR\Desktop\Poverty Mapping\Sm
 global data       	"$main\00.Data"
 global figs        "$main\05.Graphics"
 
+graph set window fontface "Arial Narrow"
+local graphs graphregion(color(white)) xsize(9) ysize(9)
 *===============================================================================
-// Import centroids...
+// Direct estimates at admin level 2
 *===============================================================================
-/*
-import delimited using "$data\district_centroids.csv", clear
-
-
-//keep district dist_code x y
-rename adm2_en distname 
-rename adm2_pcode district
-rename y latitude
-rename x longitude
-
-tempfile centroids
-save centroids,replace
-*/
-
-*===============================================================================
-//Census Pop
-*===============================================================================
-/*
-use "$data\input\FHcensus_district.dta", clear
-keep pop district region
-
-gen D = region*100
-replace D = D+district
-
-drop district 
-rename D district
-
-tempfile pops
-save pops,replace
-*/
-*===============================================================================
-// Direct estimates 
-*===============================================================================
-use "$data\direct_survey_ehcvm_bfa_2021_province.dta", clear
+use "$data\direct_survey_ehcvm_bfa_2021_region.dta", clear //direct_survey_ehcvm_bfa_2021_province
 gen u_ci = fgt0+invnormal(0.975)*sqrt(dir_fgt0_var)
 gen l_ci = fgt0+invnormal(0.025)*sqrt(dir_fgt0_var)
 
 gen u_ci90 = fgt0+invnormal(0.95)*sqrt(dir_fgt0_var)
 gen l_ci90 = fgt0+invnormal(0.05)*sqrt(dir_fgt0_var)
 
-keep adm2_pcode fgt0 l_ci* u_ci*
+keep adm1_pcode fgt0 l_ci* u_ci* //adm2_pcode
 list
 rename fgt0 direct_fgt0
 
@@ -58,65 +27,32 @@ tempfile direct
 save direct,replace
 
 *===============================================================================
-//Fay Herriot Estimates
+//Fay Herriot Estimates  at admin level 2
 *===============================================================================
-use "$data\direct_and_fh_provinces.dta", clear
+use "$data\direct_and_fh_region.dta", clear //direct_and_fh_provinces
 
 //use "$data\FH_sae_poverty.dta", clear
-merge m:1 adm2_pcode using direct
+merge m:1 adm1_pcode using direct
 	drop if _m==2
 	drop _m
-/*
-	merge 1:1 region district using pops
-	drop if _m==2
-	drop _m
-	
-merge 1:1 district using centroids
-	drop if _m==2
-	drop _m
-	
-merge 1:1 district using "$data\direct_and_fh_provinces.dta", keepusing( dir_fgt0 dir_fgt0_var)
-	drop if _m==2
-	drop _m
-*/	
+
 //See the improvement in precision
 gen se=sqrt( dir_fgt0_var)
-twoway (scatter fh_fgt0_se se ) (line se se), graphregion(color(white)) ytitle(Fay Herriot (rmse)) xtitle(Direct estimate (SE)) legend(off)
+twoway (scatter fh_fgt0_se se ) (line se se), `graphs' ytitle(Fay Herriot (rmse)) xtitle(Direct estimate (SE)) legend(off)
 
 graph export "$figs\Fig2_right.png", as(png) replace
 
-twoway (scatter fh_fgt0 dir_fgt0 ) (line fh_fgt0 fh_fgt0), graphregion(color(white)) ytitle(Fay Herriot) xtitle(Direct estimate) legend(off)
+twoway (scatter fh_fgt0 dir_fgt0 ) (line fh_fgt0 fh_fgt0), `graphs' ytitle(Fay Herriot) xtitle(Direct estimate) legend(off)
 
 graph export "$figs\Fig2_left.png", as(png) replace
 	
-//preserve
-//groupfunction [aw=pop], mean(fh_fgt0 direct_fgt0 *_ci) by(region)
 
-graph dot (asis) fh_fgt0 u_ci l_ci, over(province) marker(2, mcolor(red) msymbol(diamond)) marker(3, mcolor(red) msymbol(diamond)) graphregion(color(white)) legend(order(1 "Poverty headcount from Fay Herriot" 2 "Direct estimate CI (95%)") cols(1)) 
+graph dot (asis) fh_fgt0 u_ci l_ci, over(region) marker(2, mcolor(red) msymbol(diamond)) marker(3, mcolor(red) msymbol(diamond)) graphregion(color(white)) legend(order(1 "Poverty headcount from Fay Herriot" 2 "Direct estimate CI (95%)") cols(1))  ///
+        title("Estimated poverty rate in BFA regions") ///
+        subtitle("(Direct vs Fay Herriot estimates)") ///
+        note("Source: EHCVM 2021 Survey")
 	
 graph export "$figs\SAE_CI.png", as(png) replace
-//restore
-*===============================================================================
-// HOtspots
-*===============================================================================
-/*
-hotspot fh_fgt0, ycoord(latitude) xcoord(longitude) indiff(0) neigh(10) radius(600)
-
-gen hotspot = ""
-rename goS_ value
-	replace hotspot = "Not significant" if value==   0 
-	replace hotspot = "Cold-spot (99%)" if inrange(value,  -1,-.99) 
-	replace hotspot = "Cold-spot (95%)" if inrange(value,-.96,-.94) 
-	replace hotspot = "Cold-spot (90%)" if inrange(value,-.91,-.89) 
-	replace hotspot = "Hot-spot (99%)"  if inrange(value, .98,   1) 
-	replace hotspot = "Hot-spot (95%)"  if inrange(value, .94, .96) 
-	replace hotspot = "Hot-spot (90%)"  if inrange(value, .89, .91) 
-*/
-*===============================================================================
-//Local Moran's I
-*===============================================================================
-//localmoran fh_fgt0, ycoord(latitude) xcoord(longitude) indiff(0) neigh(10) radius(600)
-//rename outlier_fh_fgt0 localmoran
 
 *===============================================================================
 // Prep data for Tableau
@@ -152,7 +88,7 @@ export delimited using "$data\fh_sae_bfa.csv", replace
 
 
 *===============================================================================
-// Table for document with poverty for all 216 locations
+// Table for document with poverty for all  locations
 *===============================================================================
 /*
 sort region distname
