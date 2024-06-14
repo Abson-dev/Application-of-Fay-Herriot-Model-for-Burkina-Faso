@@ -20,6 +20,7 @@ The machine learning models and direct estimates for poverty headcount (FGT0) at
 
 ####  Direct and ML estimates at the administrative level 2 (provinces). 
 
+
 ![](05.Graphics/direct_province.png){fig-align="center"}
 
 
