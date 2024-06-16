@@ -50,7 +50,7 @@ local  vars   hgender1  hage age hmstat1 hmstat2 hmstat3  hreligion1 hreligion2 
   csp_sec5 csp_sec6 csp_sec7  bank1  serviceconsult1 ///
   elec_ua1 ordure1  toilet1  eva_toi1  eva_eau1  tv1 ///
   fer1  frigo1  cuisin1  ordin1  decod1 car1  sh_id_demo1  sh_co_natu1 ///
-  conflict_diffusion_indicator mndwi brba nbai ndsi vari savi osavi ndmi  evi ndvi sr arvi ui
+  conflict_diffusion_indicator geo_*
  /*
  
  hgender1  hage age hmstat1 hmstat2 hmstat3  hreligion1 hreligion2 hreligion3  hnation2 ///
@@ -93,7 +93,7 @@ foreach x of local vars{
 	
 //global with candidate variables.
 global  thevar hgender1  hage age ///
-  conflict_diffusion_indicator mndwi brba nbai ndsi vari savi osavi ndmi  evi ndvi sr arvi ui	
+  conflict_diffusion_indicator geo_*	
 	
 *===============================================================================
 // Regression diagnostics

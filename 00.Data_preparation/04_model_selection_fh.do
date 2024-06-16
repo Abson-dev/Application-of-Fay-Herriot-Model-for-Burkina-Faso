@@ -1,15 +1,17 @@
 clear all 
+set more off 
 
-version     15
+version     18
 set matsize 8000
 set seed    648743
 
-set more off
 local graphs graphregion(color(white)) xsize(9) ysize(6) msize(small)
 
 
 
 //ssc install sae
+//cap: net install github, from("https://haghish.github.io/github/")
+//github install jpazvd/fhsae
 
 /*==============================================================================
 Do-file prepared for SAE Guidelines
@@ -33,24 +35,27 @@ merge 1:1 adm1_pcode using "$data\direct_survey_ehcvm_bfa_2021_region.dta" //dir
 drop _merge
 
 
-//global with candidate variables.
+//Global with eligible variables
+global thevar hage hgender1 age hmstat1 hmstat2 hmstat3  hreligion1 hreligion2   hnation2 hethnie1 hethnie2  halfa1  heduc1 heduc2 hactiv12m1  hbranch1  hbranch3 hbranch4  hcsp1 hcsp2 sexe1   mstat1 mstat2  religion1 religion2 nation2   telpor1  internet1 activ12m1   logem1  mur1  toit1  sol1  eauboi_ss1    elec_ac1  elec_ur1  eva_toi1   tv1  fer1  frigo1  cuisin1  ordin1  decod1  car1  conflict_diffusion_indicator geo_*
 
-local  thevar   conflict_diffusion_indicator mndwi brba nbai ndsi vari savi osavi ndmi  evi ndvi sr arvi ui
   
 //Normalize all covariates
-foreach x of local thevar{
+foreach x of global thevar {
 	cap sum `x'
 	cap replace `x' = (`x' - r(mean))/r(sd)
 }
 	
-*===============================================================================
-// Regression diagnostics
-*===============================================================================  
-  //Fit full model	
+//Fit full model	
 	fhsae dir_fgt0 $thevar, revar(dir_fgt0_var) method(fh) 
-	
-	local hhvars $thevar
-	
+/*	
+//hage hgender1 hmstat1 hbranch1 hcsp1 mstat1 nation2 toit1 eauboi_ss1 eva_toi1 cuisin1 conflict_diffusion_indicator
+//geo_mndwi geo_brba geo_nbai  geo_vari geo_savi geo_osavi  geo_evi geo_ndvi geo_sr geo_arvi geo_ui
+
+hmstat1  hreligion1  hethnie2   
+*/	
+	//local hhvars $thevar
+	local hhvars  hage hgender1 hmstat1 hbranch1 hcsp1 mstat1 nation2 toit1 eauboi_ss1 eva_toi1 cuisin1 conflict_diffusion_indicator
+
 	//Removal of non-significant variables
 	forval z= 0.8(-0.05)0.0001{
 		qui:fhsae dir_fgt0 `hhvars', revar(dir_fgt0_var) method(fh) 
@@ -80,11 +85,6 @@ foreach x of local thevar{
 	global postsign `hhvars'
 	//Final model without non-significant variables
 	fhsae dir_fgt0 $postsign, revar(dir_fgt0_var) method(fh) 
-
-*===============================================================================
-// Collinearity
-*=============================================================================== 
- 		
 	//Check VIF
 	reg dir_fgt0 $postsign, r
 	gen touse = e(sample)
@@ -146,7 +146,90 @@ foreach x of local thevar{
 	graph export "$figs\Fig1_right.png", as(png) replace
 	qnorm e_d, `graphs'
 	graph export "$figs\e_d.png", as(png) replace
+/*		
+
+// Normality 
+ 
+    reg dir_fgt0 $postvif,r
+    predict resid, resid
+    
+    // Kernel density plot  for residuals with a normal density overlaid
+    kdensity resid, normal `graphs' 
+                  
+    graph export "$figs\kdensity_resid.png", as(png) replace
+    
+    // Standardized normal probability 
+    pnorm resid , `graphs' 
+                  
+    graph export "$figs\pnorm.png", as(png) replace
+    
+    // Quantiles of a variable against the quantiles of a normal distribution
+    qnorm resid , `graphs' 
+                  
+    graph export "$figs\qnorm.png", as(png) replace
+    
+    // Numerical Test:  Shapiro-Wilk W test for normal data
+    swilk resid		
 		
+// Heteroscedasticity 
+
+    reg dir_fgt0 $postvif
+
+    // Residuals vs fitted values with a reference line at y=0
+    rvfplot , yline(0)  `graphs' 
+                                         
+    graph export "$figs\rvfplot_1.png", as(png) replace
+
+    // Cameron & Trivedi's decomposition of IM-test / White test
+    estat imtest
+    
+    // Breusch-Pagan / Cook-Weisberg test for heteroskedasticity
+    estat hettest	
+*===============================================================================
+// Influence Analysis
+*===============================================================================     
+
+// Graphic method < before >
+
+    reg dir_fgt0 $postvif
+    
+    // residuals vs fitted vals
+    rvfplot , yline(0)  `graphs' 
+                                         
+    graph export "$figs\rvfplot_2.png", as(png) replace
+    
+    
+    // normalized residual squared vs leverage
+    lvr2plot ,  `graphs' 
+                                         
+    graph export "$figs\lvr2plot.png", as(png) replace	
 	
+
+*===============================================================================
+// Model Specification tests
+*===============================================================================
+   
+   reg dir_fgt0 $postvif 
+      
+// Wald test for ommited vars < will compare with previous regression>   
+   boxcox dir_fgt0 $postvif, nolog // Box - Cox model 
+
+   
+// Functional form of the conditional mean 
+    reg dir_fgt0 $postvif 
+
+    estat ovtest // performs regression specification error test (RESET) for omitted variables 
+
+    linktest //performs a link test for model specification
+
+// Omnibus tests + Heteroscedasticity tests 
+    reg dir_fgt0 $postvif 
+    
+    estat imtest   // Cameron & Trivedi's decomposition of IM-test / White test
+        
+    estat hettest // Breusch-Pagan / Cook-Weisberg test for Heteroscedasticity 	
+
+
+*/	
 	
 save "$data\direct_and_fh_region.dta", replace //direct_and_fh_provinces
