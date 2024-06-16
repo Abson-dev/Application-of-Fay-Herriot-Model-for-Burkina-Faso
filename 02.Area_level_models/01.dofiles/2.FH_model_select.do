@@ -18,7 +18,7 @@ use "$data\province_survey_ehcvm_bfa_2021.dta", clear
 
 local vars  hgender1  hage age hmstat1 hmstat2 hmstat3  hreligion1 hreligion2 hreligion3  hnation2   hethnie1 hethnie2 hethnie3 hethnie4 hethnie5 hethnie6 hethnie7 hethnie8 hethnie9 hethnie10 hethnie11 hethnie12 halfa1  heduc1 heduc2 heduc3  hdiploma1 hdiploma2 hdiploma3  hhandig1  hactiv7j1  hactiv7j4 hactiv7j5 hactiv12m1 hactiv12m2 hactiv12m3 hbranch1  hbranch3 hbranch4 hbranch5 hbranch6 hbranch7 hbranch8 hbranch9 hbranch10 hbranch11 hsectins1 hsectins2 hsectins3 hsectins4 hsectins5  hcsp1 hcsp2 hcsp3 hcsp4 hcsp5 hcsp6  hcsp9 hcsp10 sexe1  lien2 lien3 lien4 lien5  lien7 lien8 lien9 lien10  mstat1 mstat2 mstat3  religion1 religion2 religion3  ethnie1 ethnie2 ethnie3 ethnie4 ethnie5 ethnie6 ethnie7   nation2  mal30j1  aff30j1 aff30j2 aff30j3 aff30j4  arrmal1  hos12m1  couvmal1  handit1  alfa1  educ_scol1 educ_scol2 educ_scol3 educ_scol4 educ_scol5  educ_hi1 educ_hi2 educ_hi3 educ_hi4  diplome1 diplome2 diplome3 diplome4 diplome5 diplome6 diplome7  telpor1  internet1 activ7j1 activ7j2 activ7j3 activ7j4 activ12m1 activ12m2  branch1 branch2 branch3 branch4 branch5  sectins1 sectins2 sectins3 sectins4  emploi_sec1  sectins_sec1 sectins_sec2 sectins_sec3  csp_sec1 csp_sec2 csp_sec3 csp_sec4 csp_sec5 csp_sec6 csp_sec7  bank1  serviceconsult1 serviceconsult2 serviceconsult3  persconsult1 persconsult2 logem1 logem2 logem3  mur1  toit1  sol1  eauboi_ss1  eauboi_sp1  elec_ac1  elec_ur1  elec_ua1 ordure1  toilet1  eva_toi1  eva_eau1  tv1  fer1  frigo1  cuisin1  ordin1  decod1  car1  sh_id_demo1  sh_co_natu1 sh_co_eco1  sh_id_eco1  sh_co_vio1  
 
-egen workpop_primary = rsum(csp1 csp2 csp3 csp4)
+
 
 //Normalize all covariates
 foreach x of local vars{
