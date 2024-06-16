@@ -214,7 +214,7 @@ replace adm2_pcode = "BF5604" if province == 43
 replace adm2_pcode = "BF5004" if province == 44
 replace adm2_pcode = "BF5404" if province == 45
 
-
+/*
 adm1_pcode	adm2_pcode	adm3_pcode
 BF13	BF1300	BF560104
 
@@ -227,7 +227,7 @@ BF56	BF5604	BF560205
 adm1_pcode	adm2_pcode	adm3_pcode
 BF57	BF5703	BF570405
 BF57	BF5704	BF540303
-
+*/
 gen adm3_pcode ="."
 replace adm3_pcode = "BF480301" if commune == "Andemtenga"
 replace adm3_pcode = "BF560301" if commune == "Arbinda"

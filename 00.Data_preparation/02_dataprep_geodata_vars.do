@@ -32,12 +32,13 @@ save "$data\direct_survey_ehcvm_bfa_2021_region.dta", replace
 //ACLED data
 import delimited "$data\input\conflict_diffusion2022_admin_1.csv",clear
 
+/*
 unab variable : _all
  	foreach x in `variable' {
  		rename `x' acled_`x'
  	}
 rename acled_adm1_pcode adm1_pcode
-
+*/
 merge 1:1 adm1_pcode using "$data\direct_survey_ehcvm_bfa_2021_region.dta" //direct_survey_ehcvm_bfa_2021_province
 drop _merge
 

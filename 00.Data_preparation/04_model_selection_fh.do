@@ -35,14 +35,7 @@ drop _merge
 
 //global with candidate variables.
 
-local  thevar   hgender1  hage age hmstat1 hmstat2 hmstat3  hreligion1 hreligion2 hreligion3  hnation2 ///
-  hethnie1 hethnie2 hethnie3 hethnie4 hethnie5 hethnie6 hethnie7 ///
-  heduc1 heduc2 heduc3  hdiploma1 hdiploma2 ///
-  hos12m1  couvmal1  handit1  alfa1  educ_scol1 educ_scol2 educ_scol3 ///
-  csp_sec5 csp_sec6 csp_sec7  bank1  serviceconsult1 ///
-  elec_ua1 ordure1  toilet1  eva_toi1  eva_eau1  tv1 ///
-  fer1  frigo1  cuisin1  ordin1  decod1 car1  sh_id_demo1  sh_co_natu1 ///
-  conflict_diffusion_indicator mndwi brba nbai ndsi vari savi osavi ndmi  evi ndvi sr arvi ui
+local  thevar   conflict_diffusion_indicator mndwi brba nbai ndsi vari savi osavi ndmi  evi ndvi sr arvi ui
   
 //Normalize all covariates
 foreach x of local thevar{
