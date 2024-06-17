@@ -47,7 +47,7 @@ twoway (scatter fh_fgt0 dir_fgt0 ) (line fh_fgt0 fh_fgt0), `graphs' ytitle(Fay H
 graph export "$figs\Fig2_left_admin2.png", as(png) replace
 	
 
-graph dot (asis) fh_fgt0 u_ci l_ci, over(province) marker(2, mcolor(red) msymbol(diamond)) marker(3, mcolor(red) msymbol(diamond)) graphregion(color(white)) legend(order(1 "Poverty headcount from Fay Herriot" 2 "Direct estimate CI (95%)") cols(1)) ymlabel(##5)  ///
+graph dot (asis) fh_fgt0 u_ci l_ci, over(province) marker(2, mcolor(red) msymbol(diamond)) marker(3, mcolor(red) msymbol(diamond)) graphregion(color(white)) xsize(10) ysize(20) legend(order(1 "Poverty headcount from Fay Herriot" 2 "Direct estimate CI (95%)") cols(1)) ymlabel(##5)  ///
         title("Estimated poverty rate in BFA province") ///
         subtitle("(Direct vs Fay Herriot estimates)") ///
         note("Source: EHCVM 2021 Survey")
