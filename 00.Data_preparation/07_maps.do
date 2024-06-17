@@ -309,5 +309,37 @@ geoplot ///
  graph export "$figs\direct_communes.png", as(png) replace
 */	 
 
+*===============================================================================
+//FH estimates  at the administrative level 3
+*=============================================================================== 
+
+* ------------------------------------------------------------------------------
+*     Map 1
+* ------------------------------------------------------------------------------
+ 
+use  "$main\00.Data_preparation\bfa_adm3.dta", clear
+rename ADM3_PCODE adm3_pcode
+
+merge 1:1 adm3_pcode using "$data\direct_and_fh_commune.dta"
+drop _merge
+spmap fh_fgt0 using bfa_adm3_coord ///
+        , ///
+        id(_ID) ///
+        fcolor(Reds) osize(.1) ocolor(black) ///
+        clmethod(custom)  clbreaks(0 .2 .40 .6 .8 1)  ///
+        legend(position(4) ///
+               region(lcolor(black)) ///
+               label(1 "No data") ///
+               label(2 "0% to 20%") ///
+               label(3 "20% to 40%") ///
+               label(4 "40% to 60%") ///
+               label(5 "60% to 80%") /// 
+               label(6 "80% to 100%")) ///
+        legend(region(color(white))) ///
+        title("Estimated poverty rate in BFA communes") ///
+        subtitle("(FH estimates)") ///
+        note("Source: EHCVM 2021 Survey")
+		
+graph export "$figs\fh_commune.png", as(png) replace		
 
 

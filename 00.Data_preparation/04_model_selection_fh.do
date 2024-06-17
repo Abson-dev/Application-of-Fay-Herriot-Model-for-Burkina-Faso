@@ -29,9 +29,9 @@ global figs        "$main\05.Graphics"
 
 
 
-use "$data\region_survey_ehcvm_bfa_2021.dta", clear //province_survey_ehcvm_bfa_2021
+use "$data\province_survey_ehcvm_bfa_2021.dta", clear //region_survey_ehcvm_bfa_2021
 
-merge 1:1 adm1_pcode using "$data\direct_survey_ehcvm_bfa_2021_region.dta" //direct_survey_ehcvm_bfa_2021_province
+merge 1:1 adm2_pcode using "$data\direct_survey_ehcvm_bfa_2021_province.dta" //direct_survey_ehcvm_bfa_2021_region
 drop _merge
 
 
@@ -54,7 +54,8 @@ foreach x of global thevar {
 hmstat1  hreligion1  hethnie2   
 */	
 	//local hhvars $thevar
-	local hhvars  hage hgender1 hmstat1 hbranch1 hcsp1 mstat1 nation2 toit1 eauboi_ss1 eva_toi1 cuisin1 conflict_diffusion_indicator
+	local hhvars  hage hgender1   hreligion1   hmstat1 hbranch1 hcsp1 mstat1 nation2 toit1 eauboi_ss1 eva_toi1 cuisin1 conflict_diffusion_indicator ///
+	geo_mndwi geo_brba geo_nbai  geo_vari geo_savi geo_osavi  geo_evi geo_ndvi geo_sr geo_arvi geo_ui
 
 	//Removal of non-significant variables
 	forval z= 0.8(-0.05)0.0001{
@@ -135,17 +136,17 @@ hmstat1  hreligion1  hethnie2
 	gen u_d = fh_fgt0 - xb //Random errors (area effects) and represent unexplained heterogeneity between areas, assumed to have a zero mean and constant variance
 	lab var u_d "FH area effects"
 	histogram u_d, normal `graphs'
-	graph export "$figs\Fig1_left.png", as(png) replace
+	graph export "$figs\Fig1_left_admin2.png", as(png) replace
 	qnorm u_d, `graphs'
-	graph export "$figs\u_d.png", as(png) replace
+	graph export "$figs\u_d_admin2.png", as(png) replace
 	
 	gen e_d = dir_fgt0 - fh_fgt0 //The errors, e_d are assumed to be heteroskedastic
 	lab var e_d "FH errors"
 	
 	histogram e_d, normal `graphs'
-	graph export "$figs\Fig1_right.png", as(png) replace
+	graph export "$figs\Fig1_right_admin2.png", as(png) replace
 	qnorm e_d, `graphs'
-	graph export "$figs\e_d.png", as(png) replace
+	graph export "$figs\e_d_admin2.png", as(png) replace
 /*		
 
 // Normality 
@@ -232,4 +233,4 @@ hmstat1  hreligion1  hethnie2
 
 */	
 	
-save "$data\direct_and_fh_region.dta", replace //direct_and_fh_provinces
+save "$data\direct_and_fh_provinces.dta", replace //direct_and_fh_region

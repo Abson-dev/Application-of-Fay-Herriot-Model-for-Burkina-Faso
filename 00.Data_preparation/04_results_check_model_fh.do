@@ -12,14 +12,14 @@ local graphs graphregion(color(white)) xsize(9) ysize(9)
 *===============================================================================
 // Direct estimates at admin level 2
 *===============================================================================
-use "$data\direct_survey_ehcvm_bfa_2021_region.dta", clear //direct_survey_ehcvm_bfa_2021_province
+use "$data\direct_survey_ehcvm_bfa_2021_province.dta", clear //direct_survey_ehcvm_bfa_2021_province
 gen u_ci = fgt0+invnormal(0.975)*sqrt(dir_fgt0_var)
 gen l_ci = fgt0+invnormal(0.025)*sqrt(dir_fgt0_var)
 
 gen u_ci90 = fgt0+invnormal(0.95)*sqrt(dir_fgt0_var)
 gen l_ci90 = fgt0+invnormal(0.05)*sqrt(dir_fgt0_var)
 
-keep adm1_pcode fgt0 l_ci* u_ci* //adm2_pcode
+keep adm2_pcode fgt0 l_ci* u_ci* //adm2_pcode
 list
 rename fgt0 direct_fgt0
 
@@ -29,10 +29,10 @@ save direct,replace
 *===============================================================================
 //Fay Herriot Estimates  at admin level 2
 *===============================================================================
-use "$data\direct_and_fh_region.dta", clear //direct_and_fh_provinces
+use "$data\direct_and_fh_provinces.dta", clear //direct_and_fh_provinces
 
 //use "$data\FH_sae_poverty.dta", clear
-merge m:1 adm1_pcode using direct
+merge m:1 adm2_pcode using direct
 	drop if _m==2
 	drop _m
 
@@ -40,19 +40,19 @@ merge m:1 adm1_pcode using direct
 gen se=sqrt( dir_fgt0_var)
 twoway (scatter fh_fgt0_se se ) (line se se), `graphs' ytitle(Fay Herriot (rmse)) xtitle(Direct estimate (SE)) legend(off)
 
-graph export "$figs\Fig2_right.png", as(png) replace
+graph export "$figs\Fig2_right_admin2.png", as(png) replace
 
 twoway (scatter fh_fgt0 dir_fgt0 ) (line fh_fgt0 fh_fgt0), `graphs' ytitle(Fay Herriot) xtitle(Direct estimate) legend(off)
 
-graph export "$figs\Fig2_left.png", as(png) replace
+graph export "$figs\Fig2_left_admin2.png", as(png) replace
 	
 
-graph dot (asis) fh_fgt0 u_ci l_ci, over(region) marker(2, mcolor(red) msymbol(diamond)) marker(3, mcolor(red) msymbol(diamond)) graphregion(color(white)) legend(order(1 "Poverty headcount from Fay Herriot" 2 "Direct estimate CI (95%)") cols(1))  ///
-        title("Estimated poverty rate in BFA regions") ///
+graph dot (asis) fh_fgt0 u_ci l_ci, over(province) marker(2, mcolor(red) msymbol(diamond)) marker(3, mcolor(red) msymbol(diamond)) graphregion(color(white)) legend(order(1 "Poverty headcount from Fay Herriot" 2 "Direct estimate CI (95%)") cols(1))  ///
+        title("Estimated poverty rate in BFA province") ///
         subtitle("(Direct vs Fay Herriot estimates)") ///
         note("Source: EHCVM 2021 Survey")
 	
-graph export "$figs\SAE_CI.png", as(png) replace
+graph export "$figs\SAE_CI_admin2.png", as(png) replace
 
 *===============================================================================
 // Prep data for Tableau
@@ -84,7 +84,7 @@ gen sig_diff = "Significantly more poor than the region average" if l_ci_fh>u_ci
 replace sig_diff = "Significantly less poor than the region average" if u_ci_fh<l_ci
 
 
-export delimited using "$data\fh_sae_bfa.csv", replace
+export delimited using "$data\fh_sae_bfa_admin2.csv", replace
 
 
 *===============================================================================
