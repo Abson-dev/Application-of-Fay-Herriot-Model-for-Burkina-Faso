@@ -31,7 +31,7 @@ The machine learning models and direct estimates for poverty headcount (FGT0) at
 ![](05.Graphics/direct_communes.png){fig-align="center"}
 
 
-![](05.Graphics/fh_communes.png){fig-align="center"}
+![](05.Graphics/fh_commune.png){fig-align="center"}
 
 ## References
 
