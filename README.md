@@ -5,12 +5,14 @@
 **EHCVM-2021**: 3227 observations for households that cover 13 regions, 44 provinces and 314 communes. 
 
 
-**Landsat 8-C2-SR 2022** : 70,238 observations for settlements that cover all the 13 regions, 44 provinces and 314 communes. 
+**ACLED Data** : ACLED data at second administrative level. 
+
+**Climate data**
 
 
 ## Poverty Mapping for Burkina Faso
 
-The machine learning models and direct estimates for poverty headcount (FGT0) at non-representative area levels: region (admin level 1), provinces (admin level 2), and communes (admin level 3) were calculated by using aggregated means from the EHCVM-2021 at the household level (3227 households) and the Landsat 8-C2-SR 2022 georeferenced variables at the settlement level (70,238 settlements). Direct estimates were also calculated for every geographical level of disaggregation, including the ones where the EHCVM-2021 is representative (national, urban/rural, and regional level).
+The machine learning models and direct estimates for poverty headcount (FGT0) at non-representative area levels: region (admin level 1), provinces (admin level 2), and communes (admin level 3) were calculated by using aggregated means from the EHCVM-2021 at the household level (3227 households),the ACLED data and climate data. Direct estimates were also calculated for every geographical level of disaggregation, including the ones where the EHCVM-2021 is representative (national, urban/rural, and regional level).
 
 ### Estimates and maps
 
