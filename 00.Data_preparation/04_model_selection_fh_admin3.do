@@ -31,7 +31,7 @@ global figs        "$main\05.Graphics"
 
 use "$data\commune_survey_ehcvm_bfa_2021.dta", clear //region_survey_ehcvm_bfa_2021
 bys adm3_pcode: keep if _n==1
-merge 1:1 adm3_pcode using "$data\direct_survey_ehcvm_bfa_2021_commune.dta" //direct_survey_ehcvm_bfa_2021_region
+merge 1:1 adm3_pcode using "$data\direct_survey_ehcvm_bfa_2021_admin3.dta" //direct_survey_ehcvm_bfa_2021_region
 drop _merge
 
 
@@ -233,4 +233,4 @@ hmstat1  hreligion1  hethnie2
 
 */	
 	
-save "$data\direct_and_fh_commune.dta", replace //direct_and_fh_region
+save "$data\direct_and_fh_admin3.dta", replace //direct_and_fh_region

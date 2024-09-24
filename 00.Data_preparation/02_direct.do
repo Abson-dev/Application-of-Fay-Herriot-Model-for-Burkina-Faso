@@ -194,7 +194,7 @@ svy:proportion fgt0, over(province)
 	replace adm1_pcode = "BF57" if region == 13
 	
 	
-	gen adm2_pcode ="."
+gen adm2_pcode ="."
 replace adm2_pcode = "BF4601" if province == 31
 replace adm2_pcode = "BF4901" if province == 1
 replace adm2_pcode = "BF4602" if province == 32
@@ -240,7 +240,7 @@ replace adm2_pcode = "BF5403" if province == 29
 replace adm2_pcode = "BF5004" if province == 44
 replace adm2_pcode = "BF5404" if province == 45
 
-	save "$data\direct_survey_ehcvm_bfa_2021_province.dta", replace
+save "$data\direct_survey_ehcvm_bfa_2021_province.dta", replace
 
 
 
@@ -318,6 +318,17 @@ gen fgt0 = (welfare < pl_abs) if !missing(welfare)
 
 gen popw = WTA_S_HHSIZE*hhsize
 
+gen fgt0se = fgt0
+
+gen Sample_size = 1
+
+collapse  (sum)  Sample_size popw WTA_S_HHSIZE (mean) fgt0 (semean) fgt0se [aw = popw], by(adm3_pcode_bis) // not [aw = popw]
+
+collapse (count)
+gen dir_fgt0_var = fgt0se ^2
+
+/*
+
 //SVY set, SRS	
 	svyset [pw=popw], strata(adm3_pcode_bis)
 	//Get direct estimates
@@ -342,7 +353,7 @@ gen popw = WTA_S_HHSIZE*hhsize
 
 	replace dir_fgt0_var = . if dir_fgt0_var==0
 	replace dir_fgt0 = . if missing(dir_fgt0_var)
-	
+*/	
 gen adm3_pcode = "."
 replace adm3_pcode = "BF130001" if adm3_pcode_bis == 130001
 replace adm3_pcode = "BF130002" if adm3_pcode_bis == 130002

@@ -1,5 +1,5 @@
 ---
-title: Small Area Estimation of Poverty in Four West African Countries by Integrating
+title: Small Area Estimation of Poverty Mapping in  West African Countries by Integrating
   Survey, Geospatial Data and ACLED Data
 author: "Aboubacar HEMA"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
@@ -118,6 +118,8 @@ custom_tab <- function(df, header, footer){
 Direct estimates where the Survey Household is representative. Direct estimates do not use auxiliary data by definition; thus, we just use the poverty dummy indicator from the EHCVM-2021 to calculate it. Direct estimates are calculated solely using the household survey data, that is why you will find some communes  with missing values in the direct estimate’s tables. The EHCVM-2021 is representative at the national, urban/rural, and regional level. 
 
 ##	Direct estimates at the national and urban/rural level.
+
+## Direct  and FH estimates at the first administrative level
 
 
 ```{r echo=FALSE, message=F, warning=F, message=F, warning=F}
