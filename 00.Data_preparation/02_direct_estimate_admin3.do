@@ -1,3 +1,9 @@
+global main          "C:\Users\AHema\OneDrive - CGIAR\Desktop\Poverty Mapping\Small area estimation\Burkina Faso\Application of Fay-Herriot Model for Burkina Faso"
+global data       	"$main\00.Data"
+
+
+
+
 
 *===============================================================================
 //level 3 
@@ -14,7 +20,12 @@ rename grappe clust //to check
 
 egen strata = group(region urban)
 svyset clust [pw=WTA_S_HHSIZE], strata(strata)
+
+//gen pl_abs2 = pl_abs
+//*def_temp*def_spa
 gen fgt0 = (welfare < pl_abs) if !missing(welfare)
+
+//tab fgt0 [aw = WTA_S_HHSIZE*hhsize]
 
 /*
 //FGT :  indices de Foster-Greer-Thorbecke (FGT) 
@@ -46,6 +57,7 @@ collapse  (sum)  Sample_size popw WTA_S_HHSIZE (mean) fgt0 (semean) fgt0se [aw =
 
 gen dir_fgt0_var = fgt0se ^2
 
+gen adm0_pcode = substr(adm3_pcode, 1, 2)
 gen adm1_pcode = substr(adm3_pcode, 1, 4) 
 gen adm2_pcode = substr(adm3_pcode, 1, 6) 
 
