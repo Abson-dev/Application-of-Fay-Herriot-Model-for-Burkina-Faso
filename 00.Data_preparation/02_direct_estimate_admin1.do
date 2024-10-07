@@ -39,7 +39,7 @@ rename grappe clust //to check
 
 egen strata = group(region urban)
 svyset clust [pw=WTA_S_HHSIZE], strata(strata)
-gen fgt0 = (welfare < pl_abs) if !missing(welfare)
+gen fgt0 = (welfare < pl_abs) if !missing(welfare) // pl_abs * tempo/spat
 /*
 //FGT :  indices de Foster-Greer-Thorbecke (FGT) 
 définis en 1984
