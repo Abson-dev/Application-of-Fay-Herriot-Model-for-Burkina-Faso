@@ -99,7 +99,7 @@ unab variable : _all
 rename geo_adm3_pcode adm3_pcode 
 
 
-merge 1:1 adm3_pcode using "$data\direct_survey_ehcvm_bfa_2021_admin3.dta" //direct_survey_ehcvm_bfa_2021_admin1
+merge 1:1 adm3_pcode using "$data\direct_survey_ehcvm_bfa_2021_admin3.dta" 
 drop adm0_pcode
 gen adm0_pcode = substr(adm3_pcode, 1, 2)
 keep if adm0_pcode == "BF"
@@ -111,10 +111,10 @@ drop _merge
 pwcorr fgt0 geo_*
 
 stepwise, pr(.10):reg fgt0 geo_*
-save "$data\direct_survey_ehcvm_bfa_2021_geo_indices_Median_admin3.dta", replace //direct_survey_ehcvm_bfa_2021_admin1
+save "$data\direct_survey_ehcvm_bfa_2021_geo_indices_Median_admin3.dta", replace 
 
 //ACLED data
-import delimited "$data\Geospatial Data\ACLED_Conflict_diffusion_Indicator_admin_3.csv",clear //events_diffusion_Count_admin1_2021
+import delimited "$data\Geospatial Data\ACLED_Conflict_diffusion_Indicator_admin_3.csv",clear
 
 rename conflict_diffusion_indicator cdi
 save "$data\cdi.dta", replace //direct_survey_ehcvm_bfa_2021_admin1
@@ -125,15 +125,19 @@ rename inhabitants_inside5km_events Worlpop_population_exposed
 rename exposed_to_conflict_indicator ei
 merge 1:1 adm3_pcode using "$data\cdi.dta"
 drop _merge
-
-/*
-unab variable : _all
+unab variable : _all 
  	foreach x in `variable' {
  		rename `x' acled_`x'
  	}
-rename acled_adm1_pcode adm1_pcode
-*/
-merge 1:1 adm3_pcode using "$data\direct_survey_ehcvm_bfa_2021_admin3.dta" //direct_survey_ehcvm_bfa_2021_admin1
-drop _merge
+rename acled_adm3_pcode adm3_pcode 
+rename acled_Worlpop_population  Worlpop_population
+rename acled_Worlpop_population_exposed Worlpop_population_exposed
 
-save "$data\direct_survey_ehcvm_bfa_2021_admin3.dta", replace //direct_survey_ehcvm_bfa_2021_admin1
+merge 1:1 adm3_pcode using "$data\direct_survey_ehcvm_bfa_2021_geo_indices_Median_admin3.dta" 
+keep if _merge==3
+drop _merge
+order adm0_pcode adm1_pcode adm2_pcode adm3_pcode
+save "$data\direct_survey_ehcvm_bfa_2021_admin3.dta", replace 
+
+
+save "$data\direct_survey_ehcvm_bfa_2021_geo_indices_Median_Acled_admin3.dta", replace 
