@@ -10,9 +10,9 @@ global figs        "$main\05.Graphics"
 graph set window fontface "Arial Narrow"
 local graphs graphregion(color(white)) xsize(9) ysize(9)
 *===============================================================================
-// Direct estimates at admin level 2
+// Direct estimates at admin level 3
 *===============================================================================
-use "$data\direct_survey_ehcvm_bfa_2021_commune.dta", clear //direct_survey_ehcvm_bfa_2021_province
+use "$data\direct_survey_ehcvm_bfa_2021_geo_covariates_admin3.dta", clear //direct_survey_ehcvm_bfa_2021_province
 gen u_ci = fgt0+invnormal(0.975)*sqrt(dir_fgt0_var)
 gen l_ci = fgt0+invnormal(0.025)*sqrt(dir_fgt0_var)
 
@@ -27,9 +27,9 @@ tempfile direct
 save direct,replace
 
 *===============================================================================
-//Fay Herriot Estimates  at admin level 2
+//Fay Herriot Estimates  at admin level 3
 *===============================================================================
-use "$data\direct_and_fh_commune.dta", clear //direct_and_fh_provinces
+use "$data\FH_sae_poverty.dta", clear //direct_and_fh_provinces
 
 //use "$data\FH_sae_poverty.dta", clear
 merge m:1 adm3_pcode using direct
@@ -47,15 +47,15 @@ twoway (scatter fh_fgt0 dir_fgt0 ) (line fh_fgt0 fh_fgt0), `graphs' ytitle(Fay H
 graph export "$figs\Fig2_left_admin3.png", as(png) replace
 	
 
-/*
-filter by region and compute the graphique
-graph dot (asis) fh_fgt0 u_ci l_ci, over(adm3_pcode_bis) marker(2, mcolor(red) msymbol(diamond)) marker(3, mcolor(red) msymbol(diamond)) graphregion(color(white)) legend(order(1 "Poverty headcount from Fay Herriot" 2 "Direct estimate CI (95%)") cols(1))  ///
+
+//
+graph dot (asis) fh_fgt0 u_ci l_ci in 1/20, over(adm3_pcode) marker(2, mcolor(red) msymbol(diamond)) marker(3, mcolor(red) msymbol(diamond)) graphregion(color(white)) legend(order(1 "Poverty headcount from Fay Herriot" 2 "Direct estimate CI (95%)") cols(1))  ///
         title("Estimated poverty rate in BFA communes") ///
         subtitle("(Direct vs Fay Herriot estimates)") ///
         note("Source: EHCVM 2021 Survey")
 	
 graph export "$figs\SAE_CI_communes.png", as(png) replace
-*/
+
 *===============================================================================
 // Prep data for Tableau
 *===============================================================================
@@ -77,7 +77,7 @@ local last = 0
 replace range_Q10 = "NULL" if range_Q10 ==""
 
 *===============================================================================
-// Indicate significantly more or less poor than region
+// Indicate significantly more or less poor than admin 3
 *===============================================================================
 gen u_ci_fh = min(1,fh_fgt0+invnormal(0.975)*fh_fgt0_se)
 gen l_ci_fh = max(0,fh_fgt0+invnormal(0.025)*fh_fgt0_se)
@@ -92,15 +92,14 @@ export delimited using "$data\fh_sae_bfa_commune.csv", replace
 *===============================================================================
 // Table for document with poverty for all  locations
 *===============================================================================
-/*
-sort region distname
-keep region distname pop fh_fgt0  fh_fgt0_se
-gen numpoor = pop*fh_fgt0
+
+sort adm3_pcode
+keep adm3_pcode Worlpop_population fh_fgt0  fh_fgt0_se
+gen numpoor = Worlpop_population*fh_fgt0
 gen u_ci = min(1,fh_fgt0+invnormal(0.975)*fh_fgt0_se)
 gen l_ci = max(0,fh_fgt0+invnormal(0.025)*fh_fgt0_se)
 
 
-order region distname pop fh_fgt0 fh_fgt0_se numpoor l_ci u_ci 
+order adm3_pcode Worlpop_population fh_fgt0 fh_fgt0_se numpoor l_ci u_ci 
 
 export excel using "$data\povertyTable.xlsx", sheet(tab_stata) first(variable) sheetreplace
-*/

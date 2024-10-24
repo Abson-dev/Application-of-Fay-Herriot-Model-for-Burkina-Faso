@@ -10,7 +10,7 @@ global data       	"$main\00.Data"
 *===============================================================================
 
 use "$data\survey_ehcvm_bfa_2021.dta",clear
-rename milieu1 urban
+rename milieu urban
 rename pcexp welfare
 rename zref pl_abs
 rename hhweight2021 WTA_S_HHSIZE
@@ -51,11 +51,20 @@ gen popw = WTA_S_HHSIZE*hhsize
 
 gen fgt0se = fgt0
 
-gen Sample_size = 1
+//gen Sample_size = 1
+gen N=1 //Need the number of observation by district...for smoother variance function
+gen N_hhsize = hhsize
+//Number of EA by admin3
+bysort adm3_pcode clust: gen num_ea = 1 if _n==1
 
-collapse  (sum)  Sample_size popw WTA_S_HHSIZE (mean) fgt0 (semean) fgt0se [aw = popw], by(adm3_pcode) //region province 
-
+collapse  (sum)  N popw WTA_S_HHSIZE num_ea N_hhsize (mean) fgt0 (semean) fgt0se [aw = popw], by(adm3_pcode)  
+gen dir_fgt0 = fgt0
 gen dir_fgt0_var = fgt0se ^2
+gen dir_fgt0_cv = fgt0se/fgt0
+gen zero = dir_fgt0 //original variable with direct estimates
+
+replace dir_fgt0_var = . if dir_fgt0_var==0
+replace dir_fgt0 = . if missing(dir_fgt0_var)
 
 gen adm0_pcode = substr(adm3_pcode, 1, 2)
 gen adm1_pcode = substr(adm3_pcode, 1, 4) 

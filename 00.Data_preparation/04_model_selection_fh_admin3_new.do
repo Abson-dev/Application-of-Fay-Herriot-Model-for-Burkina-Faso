@@ -34,9 +34,43 @@ end
 
 use "$data\commune_survey_ehcvm_bfa_2021.dta", clear
 
-drop 
+sort adm3_pcode
+quietly by adm3_pcode:  gen dup = cond(_N==1,0,_n)
 
-local vars hage hgender1 age hmstat1 hmstat2 hmstat3  hreligion1 hreligion2   hnation2 hethnie1 hethnie2  halfa1  heduc1 heduc2 hactiv12m1  hbranch1  hbranch3 hbranch4  hcsp1 hcsp2 sexe1   mstat1 mstat2  religion1 religion2 nation2   telpor1  internet1 activ12m1   logem1  mur1  toit1  sol1  eauboi_ss1    elec_ac1  elec_ur1  eva_toi1   tv1  fer1  frigo1  cuisin1  ordin1  decod1  car1
+tabulate dup
+/*
+dup = 0       record is unique
+dup = 1       record is duplicate, first occurrence
+dup = 2       record is duplicate, second occurrence
+dup = 3       record is duplicate, third occurrence
+etc.
+
+
+
+        dup |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |        235       98.33       98.33
+          1 |          2        0.84       99.16
+          2 |          2        0.84      100.00
+------------+-----------------------------------
+      Total |        239      100.00
+
+*/
+
+drop if dup>1
+drop dup
+
+
+merge 1:1 adm3_pcode using "$data\direct_survey_ehcvm_bfa_2021_geo_covariates_admin3.dta"
+drop _merge
+
+foreach x of varlist geo_* acled_* health_* travel_* malaria_* night_* {
+	gen `x'2 = `x' * `x'
+}
+
+local vars  hage		hcsp6	resid1	hcsp4	lien1	lien2	lien3	lien4	lien5	lien6	lien7	lien8	lien9	lien10	hsectins3		mstat3		mstat6	religion1	religion2	religion3	religion4	ethnie1	ethnie2	ethnie3	ethnie4	ethnie5	ethnie6	ethnie7	ethnie8	ethnie9	ethnie10	ethnie11	nation1	nation2		nation4			nation7	nation8	nation9	nation10	hcsp8	hsectins1	nation13	nation14	nation15	mal30j1		hos12m1	couvmal1			educ_hi1	educ_hi2	educ_hi3	hcsp9	educ_hi5	educ_hi6		educ_hi8	diplome1	diplome2	diplome3	diplome4	diplome5	diplome6	diplome7	diplome8	hcsp3		diplome11		internet1	activ7j1	activ7j2	activ7j3	activ7j4	activ7j5	activ12m1	branch1	branch2	branch3	branch4	branch5	branch6	branch7	branch8	branch9	branch10	bank1	logem1	logem2	logem3	mur1	hcsp5	sol1		elec_ac1	elec_ur1	elec_ua1	ordure1	toilet1	eva_toi1	eva_eau1	tv1	fer1	hsectins2	cuisin1	ordin1	decod1	hsectins5	sh_id_demo1	sh_co_natu1	sh_co_eco1		sh_co_vio1	sh_co_oth1	milieu1		hmstat2		hmstat4	hmstat5	hmstat6	hreligion1	hreligion2	hreligion3	hreligion4	hnation1	hnation2	hnation3	hcsp7	hnation5	hnation6	hnation7	hethnie1	hethnie2	hethnie3	hethnie4	hethnie5	hethnie6	hethnie7	hethnie8		hsectins4	halfa1	heduc1	heduc2	heduc3	heduc4	heduc5	heduc6	heduc7	hdiploma1	hdiploma2	hdiploma3	hdiploma4	hdiploma6	hdiploma7	hdiploma8	hdiploma9	hdiploma10	hhandig1	hactiv7j1	hcsp1	hcsp2	hactiv7j4	hactiv12m1	hbranch1	hbranch2	hbranch3	hbranch4	hbranch5	hbranch6	hbranch7		hbranch9	hbranch10 
+
+//geo_mndwi	health_access_w	acled_sh_inside5km_erv	acled_sh_inside5km_riots2	geo_ndvi2	geo_osavi	geo_ui2	health_access_w2	geo_sr	acled_sh_inside5km_protests	acled_sh_inside5km_battles2	geo_ndmi2	geo_brba2
 
 
 //Normalize
@@ -46,36 +80,46 @@ foreach x of local vars{
 }
 
 
-
-gen D = region*100
-replace D = D+district
-
-drop district 
-rename D district
-
-merge 1:1 adm3_pcode using "$data\direct_survey_ehcvm_bfa_2021_geo_indices_Median_Acled_admin3.dta"
-tab region, gen(thereg)
+local vars hage		hcsp6	resid1	hcsp4	lien1	lien2	lien3	lien4	lien5	lien6	lien7	lien8	lien9	lien10	hsectins3		mstat3		mstat6	religion1	religion2	religion3	religion4	ethnie1	ethnie2	ethnie3	ethnie4	ethnie5	ethnie6	ethnie7	ethnie8	ethnie9	ethnie10	ethnie11	nation1	nation2		nation4			nation7	nation8	nation9	nation10	hcsp8	hsectins1	nation13	nation14	nation15	mal30j1		hos12m1	couvmal1			educ_hi1	educ_hi2	educ_hi3	hcsp9	educ_hi5	educ_hi6		educ_hi8	diplome1	diplome2	diplome3	diplome4	diplome5	diplome6	diplome7	diplome8	hcsp3		diplome11		internet1	activ7j1	activ7j2	activ7j3	activ7j4	activ7j5	activ12m1	branch1	branch2	branch3	branch4	branch5	branch6	branch7	branch8	branch9	branch10	bank1	logem1	logem2	logem3	mur1	hcsp5	sol1		elec_ac1	elec_ur1	elec_ua1	ordure1	toilet1	eva_toi1	eva_eau1	tv1	fer1	hsectins2	cuisin1	ordin1	decod1	hsectins5	sh_id_demo1	sh_co_natu1	sh_co_eco1		sh_co_vio1	sh_co_oth1	milieu1		hmstat2		hmstat4	hmstat5	hmstat6	hreligion1	hreligion2	hreligion3	hreligion4	hnation1	hnation2	hnation3	hcsp7	hnation5	hnation6	hnation7	hethnie1	hethnie2	hethnie3	hethnie4	hethnie5	hethnie6	hethnie7	hethnie8		hsectins4	halfa1	heduc1	heduc2	heduc3	heduc4	heduc5	heduc6	heduc7	hdiploma1	hdiploma2	hdiploma3	hdiploma4	hdiploma6	hdiploma7	hdiploma8	hdiploma9	hdiploma10	hhandig1	hactiv7j1	hcsp1	hcsp2	hactiv7j4	hactiv12m1	hbranch1	hbranch2	hbranch3	hbranch4	hbranch5	hbranch6	hbranch7		hbranch9	hbranch10 geo_* health_* malaria_* night_* travel_* acled_* adm1_pcode1-adm1_pcode13 
+//geo_osavi geo_ndmi  geo_ndsi geo_ndvi geo_sr
+//adm1_pcode1-adm1_pcode13
+/*
+local vars geo_* health_* malaria_* night_* travel_* acled_*  adm2_pcode1-adm2_pcode44
+*/
 unab hhvars: `vars'
 
+/*
+heckman fgt0 hage		hcsp6	resid1	hcsp4	lien1	lien2	lien3	lien4	lien5	lien6	lien7	lien8	lien9	lien10	hsectins3		mstat3		mstat6	religion1	religion2	religion3	religion4	ethnie1	ethnie2	ethnie3	ethnie4	ethnie5	ethnie6	ethnie7	ethnie8	ethnie9	ethnie10	ethnie11	nation1	nation2		nation4			nation7	nation8	nation9	nation10	hcsp8	hsectins1	nation13	nation14	nation15	mal30j1		hos12m1	couvmal1			educ_hi1	educ_hi2	educ_hi3	hcsp9	educ_hi5	educ_hi6		educ_hi8	diplome1	diplome2	diplome3	diplome4	diplome5	diplome6	diplome7	diplome8	hcsp3		diplome11		internet1	activ7j1	activ7j2	activ7j3	activ7j4	activ7j5	activ12m1	branch1	branch2	branch3	branch4	branch5	branch6	branch7	branch8	branch9	branch10	bank1	logem1	logem2	logem3	mur1	hcsp5	sol1		elec_ac1	elec_ur1	elec_ua1	ordure1	toilet1	eva_toi1	eva_eau1	tv1	fer1	hsectins2	cuisin1	ordin1	decod1	hsectins5	sh_id_demo1	sh_co_natu1	sh_co_eco1		sh_co_vio1	sh_co_oth1	milieu1		hmstat2		hmstat4	hmstat5	hmstat6	hreligion1	hreligion2	hreligion3	hreligion4	hnation1	hnation2	hnation3	hcsp7	hnation5	hnation6	hnation7	hethnie1	hethnie2	hethnie3	hethnie4	hethnie5	hethnie6	hethnie7	hethnie8		hsectins4	halfa1	heduc1	heduc2	heduc3	heduc4	heduc5	heduc6	heduc7	hdiploma1	hdiploma2	hdiploma3	hdiploma4	hdiploma6	hdiploma7	hdiploma8	hdiploma9	hdiploma10	hhandig1	hactiv7j1	hcsp1	hcsp2	hactiv7j4	hactiv12m1	hbranch1	hbranch2	hbranch3	hbranch4	hbranch5	hbranch6	hbranch7		hbranch9	hbranch10  , select(acled_ei geo_sr geo_vari geo_ndvi2	geo_savi geo_brba geo_savi2 geo_ndvi geo_ndmi2 geo_nbai2 acled_ei2) twostep
 
+predict dir_fgt0_estim, xb
+
+gen dummy = (dir_fgt0 !=.)
+
+stepwise pr(.1): reg dummy acled_* geo_* geo_* acled_* health_* travel_*
+reg dummy acled_* geo_*
+*/
+/*
+stepwise, pr(.1): reg fgt0  geo_mndwi geo_brba geo_nbai geo_ndsi geo_vari geo_savi geo_osavi geo_ndmi geo_evi geo_ndvi geo_sr geo_arvi geo_ui acled_ei acled_cdi acled_sh_inside5km_vac acled_sh_inside5km_battles acled_sh_inside5km_riots acled_sh_inside5km_protests acled_sh_inside5km_erv health_access_m health_access_w travel_time_to_cities_2015
+*/
+//stepwise, pr(.1): reg fgt0 geo_* health_* malaria_* night_* travel_* acled_*
 *===============================================================================
 //Create smoothed variance function
 *===============================================================================
+replace dir_fgt0_var = 0.0001 if dir_fgt0_var ==. in 1/237
 gen log_s2 = log(dir_fgt0_var)
 gen logN = log(N)
 gen logN2 = logN^2
-gen logpop  = log(pop)
+gen logpop  = log(Worlpop_population)
+//pop
 gen logpop2 = logpop^2
-gen accra = region==3
-//reg log_s2 logpop logpop2 i.accra#c.logN, r
-//reg log_s2 logpop logpop2 i.accra##c.logN, r
-gen share = log(N_hhsize/pop)
+
+gen share = log(N_hhsize/Worlpop_population)
 reg log_s2 share, r
 local phi2 = e(rmse)^2
 cap drop xb_fh
 predict xb_fh, xb
 predict residual,res
-sum xb_fh if res!=.,d
+sum xb_fh if residual!=.,d
 gen exp_xb_fh = exp(xb_fh)
 sum dir_fgt0_var
 local sumvar = r(sum)
@@ -97,10 +141,10 @@ fhsae dir_fgt0 `hhvars', revar(dir_fgt0_var) method(fh)
 	local hhvars : list clean hhvars
 	dis as error "Sim : `sim' first removal"
 	//Removal of non-significant variables
-	forval z= 0.8(-0.05)0.01{
+	forval z= 0.2(-0.05)1e-5{
 		local regreso 
 		while ("`regreso'"!="it's done"){
-			fhsae dir_fgt0 `hhvars', revar(dir_fgt0_var) method(fh) 
+			quietly:fhsae dir_fgt0 `hhvars', revar(dir_fgt0_var) method(fh) 
 			mata: bb=st_matrix("e(b)")
 			mata: se=sqrt(diagonal(st_matrix("e(V)")))
 			local _myhhvars : colnames(e(b))
@@ -112,8 +156,8 @@ fhsae dir_fgt0 `hhvars', revar(dir_fgt0_var) method(fh)
 	//Global with non-significant variables removed
 	global postsign `hhvars'
 	
-	//Final model without non-significant variables no funciona
-	fhsae dir_fgt0 ${postsign}, revar(dir_fgt0_var) method(fh)
+	//Final model without non-significant variables 
+	quietly:fhsae dir_fgt0 ${postsign}, revar(dir_fgt0_var) method(fh)
 	
 	//Check VIF
 	reg dir_fgt0 $postsign, r
@@ -121,18 +165,99 @@ fhsae dir_fgt0 `hhvars', revar(dir_fgt0_var) method(fh)
 	gen weight = 1
 	mata: ds = _f_stepvif("$postsign","weight",5,"touse") 
 	
-	//ver abajo
-	global postvif `vifvar'
+	local threshold = 10 
+	local keepvars "" 
+	// Run initial regression 
+	//regress dir_fgt0 $postsign 
+	// Calculate VIF for each variable 
+	local postsign geo_mndwi_min	geo_brba_min	geo_arvi_min2	geo_vari_min	geo_savi_min	geo_osavi_min	geo_ui_min2	acled_sh_inside5km_riots2	acled_sh_inside5km_protests	geo_sr_min	malaria_pf_parasite_rate_median2	health_access_w2	malaria_pf_parasite_rate_min2	acled_cdi	geo_ndvi_median2	acled_ei2	night_offset_max2	geo_evi_max2	geo_ndvi_min2	geo_vari_min2	geo_ui_median2	health_access_w	geo_arvi_max	night_offset_max	geo_mndwi_median	geo_brba_median	acled_sh_inside5km_erv	acled_cdi2	geo_arvi_max2	geo_osavi_median	geo_osavi_min2	night_scale_min	geo_sr_median	geo_savi_min2	geo_sr_min2	geo_mndwi_min2	geo_brba_min2
+
+	local remove  ""
+	foreach var of varlist $postsign {
+		local remove `var'
+		local $postsign : list $postsign  - remove
+		regress `var' $postsign 
+		vif, uncentered     
+		if r(vif) <= `threshold' { 
+        	local keepvars `keepvars' `var'  
+			} 
+			} 
+// Drop variables with high VIF and rerun regression 
+if "`keepvars'" != "" {
+	     di "Keeping variables with VIF <= `threshold': `keepvars'" 
+		 regress dir_fgt0 `keepvars'
+		 }
+/* Load your dataset
+use mydata.dta, clear
+
+* Define your dependent variable and independent variables
+local dependent_var y
+local independent_vars x1 x2 x3 x4 x5
+
+* Set a threshold for VIF
+local vif_threshold 10
+
+* Start the loop
+local keep_going = 1
+
+while `keep_going' {
+    * Run the regression
+    regress `dependent_var' `independent_vars'
+    
+    * Calculate VIF
+    vif
+    
+    * Capture the VIF results
+    matrix VIFs = r(VIF)
+    mata: st_matrix("VIFs", VIFs)
+
+    * Find variables with high VIF
+    local high_vif_vars ""
+    foreach var of local independent_vars {
+        local v = VIFs[1, `var']
+        if `v' > `vif_threshold' {
+            local high_vif_vars "`high_vif_vars' `var'"
+        }
+    }
+    
+    * Check if there are any high VIF variables
+    if "`high_vif_vars'" == "" {
+        * No high VIF variables, exit the loop
+        local keep_going = 0
+    }
+    else {
+        * Remove the variable with the highest VIF
+        local highest_var = word(1, `high_vif_vars')
+        di "Removing variable: `highest_var' with VIF: " VIFs[1, `highest_var']
+        
+        * Update the list of independent variables
+        local independent_vars: remove `highest_var' `independent_vars'
+    }
+}
+
+* Final model with selected variables
+di "Final model includes: `independent_vars'"
+regress `dependent_var' `independent_vars'
+*/
+
+	
+	
+	
+	
+	
+	global postvif `keepvars'
+	
+	
 	
 	local hhvars $postvif
 	
 	//One final removal of non-significant covariates
 dis as error "Sim : `sim' final removal"
 	//One final removal of non-significant covariates
-	forval z= 0.8(-0.05)0.0001{
+	forval z= 0.2(-0.05)1e-5{
 		local regreso 
 		while ("`regreso'"!="it's done"){
-			fhsae dir_fgt0 `hhvars', revar(dir_fgt0_var) method(reml) precision(1e-10)
+			quietly:fhsae dir_fgt0 `hhvars', revar(dir_fgt0_var) method(reml) precision(1e-10)
 			mata: bb=st_matrix("e(b)")
 			mata: se=sqrt(diagonal(st_matrix("e(V)")))
 			local _myhhvars : colnames(e(b))
@@ -144,18 +269,17 @@ dis as error "Sim : `sim' final removal"
 	
 	global last `hhvars'
 	
-	fhsae dir_fgt0 `hhvars', revar(dir_fgt0_var) method(reml) precision(1e-10)
-	local remove head_religion3
-	local hhvars: list hhvars - remove
-	global last `hhvars'
+	quietly:fhsae dir_fgt0  `hhvars', revar(dir_fgt0_var) method(reml) precision(1e-10)
+//local remove head_religion3
+//local hhvars: list hhvars - remove
+//	local hhvars: list hhvars
+//	global last `hhvars'
 	
-	fhsae dir_fgt0 workpop_primary $last, revar(dir_fgt0_var) method(chandra)
-	fhsae dir_fgt0 workpop_primary $last, revar(dir_fgt0_var) method(fh)
-	fhsae dir_fgt0 workpop_primary $last, revar(dir_fgt0_var) method(reml)
+	fhsae dir_fgt0  $last, revar(dir_fgt0_var) method(reml)
 //*********************************************************************************************//
 
 	//Obtain SAE-FH-estimates	
-	fhsae dir_fgt0 workpop_primary $last, revar(dir_fgt0_var) method(reml) fh(fh_fgt0) ///
+	fhsae dir_fgt0  $last, revar(dir_fgt0_var) method(reml) fh(fh_fgt0) ///
 	fhse(fh_fgt0_se) fhcv(fh_fgt0_cv) gamma(fh_fgt0_gamma) out noneg precision(1e-13)
 
 	//Check normal errors
@@ -174,5 +298,7 @@ dis as error "Sim : `sim' final removal"
 	///graph export "$figs\SAE Ghana 2017\3. Graphics\Fig1_right.png", as(png) replace
 	qnorm e_d, graphregion(color(white))
 
-keep region district fh_fgt0 fh_fgt0_se
+	
+order adm0_pcode adm1_pcode adm2_pcode adm3_pcode fh_fgt0 fh_fgt0_se fgt0se fh_fgt0_cv dir_fgt0_cv fh_fgt0_gamma fgt0 dir_fgt0 dir_fgt0_var
+//keep adm0_pcode adm1_pcode adm2_pcode adm3_pcode fh_fgt0 fh_fgt0_se fh_fgt0_cv fh_fgt0_gamma fgt0
 save "$data\FH_sae_poverty.dta", replace
