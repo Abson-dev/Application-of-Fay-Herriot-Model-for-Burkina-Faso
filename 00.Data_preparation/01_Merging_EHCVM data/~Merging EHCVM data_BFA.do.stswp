@@ -17,11 +17,24 @@ decode province , gen(province_label)
 replace province_label=strlower(province_label)
 
 gen ADM2_NAME=""
+gen Num=strlen(province_label)
 foreach  x  in `ADM2' {
 *	di strlower("`x'")
 *	di "`x'"
- 	replace ADM2_NAME="`x'" if strrpos(province_label, strlower(ustrregexra (ustrnormalize( "`x'", "nfd" ) , "\p{Mark}", "" )))>0 
+ 	replace ADM2_NAME="`x'" if strrpos(province_label, strlower(ustrregexra (ustrnormalize( "`x'", "nfd" ) , "\p{Mark}", "" )))>0 & Num==strlen(strlower(ustrregexra (ustrnormalize( "`x'", "nfd" ) , "\p{Mark}", "" ))) 
 }
+replace ADM2_NAME="Boulkiemdé" if province_label=="boulkiemdé"
+replace ADM2_NAME="Comoé" if province_label=="comoé"
+replace ADM2_NAME="Komandjari" if province_label=="komandjoari"
+replace ADM2_NAME="Koulpélogo" if province_label=="koulpélogo"
+replace ADM2_NAME="Kourittenga" if province_label=="kouritenga"
+replace ADM2_NAME="Kourwéogo" if province_label=="kourwéogo"
+replace ADM2_NAME="Kénédougou" if province_label=="kénédougou"
+replace ADM2_NAME="Léraba" if province_label=="léraba"
+replace ADM2_NAME="Passoré" if province_label=="passoré"
+replace ADM2_NAME="Sanguié" if province_label=="sanguié"
+replace ADM2_NAME="Zoundwéogo" if province_label=="zoundwéogo"
+
 
 
 *** ADM3 in HDX to EHCVM ADM3
@@ -61,7 +74,7 @@ replace ADM3_NAME="Ipelsé" if commune=="Ipelce"
 replace ADM3_NAME="Karangasso-Sambla" if commune=="Karankasso Sambla"
 replace ADM3_NAME="Karangasso-Vigué" if commune=="Karankasso-Vigue"
 replace ADM3_NAME="Lôgbou" if commune=="Logobou"
-replace ADM3_NAME="Morlaba	" if commune=="Morolaba"
+replace ADM3_NAME="Morlaba" if commune=="Morolaba"
 replace ADM3_NAME="Ndôrôla" if commune=="N'dorola"
 replace ADM3_NAME="Ouri" if commune=="Oury"
 replace ADM3_NAME="Sabsé" if commune=="Sabce"
@@ -88,8 +101,13 @@ replace ADM3_NAME="Mégué" if commune=="Meguet"
 replace ADM3_NAME="Pâ" if commune=="PÃ´"
 replace ADM3_NAME="Tanguen-Dassouri" if commune=="Tanghin Dassouri"
 replace ADM3_NAME="Toèguen" if commune=="Toeghin"
-replace ADM3_NAME="Bobo Dioulasso" if commune=="Arrondissement N 4"
+replace ADM3_NAME="Bobo-Dioulasso" if commune=="Arrondissement N 4"
 
+**** For Non corresponging communes and province
+replace ADM2_NAME="Poni" if commune_vallab=="gbomblora"
+replace ADM2_NAME="Kénédougou" if commune_vallab=="morolaba"
+replace ADM2_NAME="Balé" if commune_vallab=="pa´"
+replace ADM2_NAME="Séno" if commune_vallab=="sampelga"
 
 collapse (firstnm) region province_label commune_vallab ADM2_NAME ADM3_NAME, by(hhid grappe menage )
 
