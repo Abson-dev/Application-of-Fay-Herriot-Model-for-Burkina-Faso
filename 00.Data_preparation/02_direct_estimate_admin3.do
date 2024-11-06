@@ -1,7 +1,5 @@
-global main          "C:\Users\AHema\OneDrive - CGIAR\Desktop\Poverty Mapping\Small area estimation\Burkina Faso\Application of Fay-Herriot Model for Burkina Faso"
-global data       	"$main\00.Data"
-
-
+global main          "C:\Users\AHema\OneDrive - CGIAR\Desktop\Poverty Mapping\Small area estimation\Burkina Faso\Application of Fay-Herriot Model for Burkina Faso\00.Data\EHCVM data"
+global data       	"$main\BFA_2021_EHCVM-P_v02_M_Stata"
 
 
 
@@ -10,10 +8,13 @@ global data       	"$main\00.Data"
 *===============================================================================
 
 use "$data\survey_ehcvm_bfa_2021.dta",clear
+rename ADM3_CODE adm3_pcode
+rename ADM2_CODE adm2_pcode
+rename ADM1_CODE adm1_pcode
 rename milieu urban
 rename pcexp welfare
 rename zref pl_abs
-rename hhweight2021 WTA_S_HHSIZE
+rename hhweight WTA_S_HHSIZE
 //rename province province
 rename grappe clust //to check
 
