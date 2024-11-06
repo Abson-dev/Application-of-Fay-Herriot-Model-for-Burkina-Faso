@@ -6,8 +6,12 @@ global Inputs_EHCVM_MLI "C:\Users\idiop\OneDrive - CGIAR\020_GithubDesktop\Appli
 
 global Inputs_EHCVM_NER "C:\Users\idiop\OneDrive - CGIAR\020_GithubDesktop\Application-of-Fay-Herriot-Model-for-Burkina-Faso\00.Data\EHCVM data\NER_2021_EHCVM-2_v01_M_STATA14"
 
+<<<<<<< Updated upstream
 
 global Inputs_EHCVM_BFA "C:\Users\idiop\OneDrive - CGIAR\020_GithubDesktop\Application-of-Fay-Herriot-Model-for-Burkina-Faso\00.Data\EHCVM data\BFA_2021_EHCVM-P_v02_M_Stata"
+=======
+global Inputs_EHCVM_SEN "C:\Users\ASY\OneDrive - CGIAR\Desktop\GithubDesktop\Application-of-Fay-Herriot-Model-for-Burkina-Faso\00.Data\EHCVM data\SEN_2021_EHCVM-2_v01_M_STATA14"
+>>>>>>> Stashed changes
 
 *************** Import HDX data
 
@@ -378,7 +382,73 @@ keep  ADM3_NAME ADM3_CODE ADM2_NAME ADM2_CODE ADM1_NAME ADM1_CODE ADM0_NAME ADM0
 save "${Inputs_EHCVM_MLI}\MLI_HDX_ADM3_EHCVM_Matching.dta", replace
 
 
+<<<<<<< Updated upstream
 
 
 
 
+=======
+******************************************************************** Senegal
+*EHCVM
+clear all
+use "${Inputs_EHCVM_SEN}\ehcvm_individu_sen2021.dta", clear
+
+*** ADM1 in HDX to EHCVM ADM1
+local ADM1 "Dakar Diourbel Fatick Kaffrine Kaolack Kédougou Kolda Louga Matam Saint-Louis Sédhiou Tambacounda Thiès Ziguinchor"
+
+foreach x in region {
+	local `x'_lab: variable label `x' // #1 from above
+	gen strL `x'_vallab = "" // start of #3
+	label variable `x'_vallab "``x'_lab' string"
+	levelsof `x', local(valrange)
+	foreach n of numlist `valrange' { 
+		local `x'_vallab_`n': label (`x') `n' // #2 from above
+		replace `x'_vallab = "``x'_vallab_`n''" if `x' == `n' // end of #3
+	}
+}
+
+// we can also decode command
+//decode  region, gen (region_vallab)
+
+gen Region=""
+replace region_vallab=strlower(region_vallab)
+foreach  x  in `ADM1' {
+	di strlower("`x'")
+	di "`x'"
+ 	replace Region="`x'" if strrpos(region_vallab, strlower(ustrregexra( ustrnormalize( "`x'", "nfd" ) , "\p{Mark}", "" ) ))>0 |  strrpos(region_vallab, "`x'")>0
+}
+tab region_vallab if Region==""
+
+
+
+*** ADM3 in HDX to EHCVM ADM3
+local ADM3 "Almadies "Grand Dakar"	"Parcelles Assainies"	"Dakar Plateau"	Guédiawaye	Thiaroye "Pikine Dagoudane"	Sangalkam	Rufisque-Est	Diamniadio	Jaxaay	Malika	Yeumbeul	Lambaye	Ngoye	Baba Garage	Ndoulo	Ndindy	Ndame	Taïf	Kaèl	Ndiob	Fimla	Tataguine	Niakhar	Djilor	Toubakouta	Niodior	Colobane	Ouadiour	Mabo	Keur Mboucki	Gnibi	Katakel	Missira Wadène	Ida Mouride	Lour Escale	Darou Minam 2	Sagna	Mbadakhoune	Nguélou	Ngothie	Koumbal	Ndiédiéng	Paoscoto	Wak Ngouna	Médina Sabakh	Bandafassi	Fongolembi	Dar Salam	Dakatéli	Sabodala	Bembou	Mampatim	Saré Bidji	Dioulacolon	Ndorna	Niaming	Fafacourou	Bonconto	Pakour	Saré Coly Sallé	Ndande	Darou Mousty	Sagata Geth	Yang-Yang	Sagata Diolof	Barkédji	Dodji	Keur Momar Sarr	Koki	Mbédiène	Sakal	Ouro Sidi	Orkadiéré	Ogo	Agnam Civol	Vélingara	Ndiaye Ngènt	Mbane	Gamadji Sarré	Thillé Boubakar	Saldé	Cas Cas	Rao	Bona	Bogal	Diaroumé	Simbandi Brassou	Djibanar	Karantaba	Diendé	Djibabouya	Djirédji	Kéniéba	Moudéri	Bellé	Dianké Makan	Koular	Bala	Bouinguel Bamba	Koutiaba Wolof	Bamba Tialène	Missira	Makacoutibantang	Koussanar	Séssène	Sindia	Fissel	Keur Moussa	Thiénaba	Noto	Niakhène	Pambal	Méouane	Mérina Dakhar	Kataba 1	Tanghori	Tendouck	Sindian	Loudia Wolof	Cabrousse	Niaguis	Niassia"
+
+
+foreach char in `ADM3' {
+    display "`char'"
+}
+*tab commune, generate(stubname)
+
+foreach x in commune {
+	local `x'_lab: variable label `x' // #1 from above
+	gen strL `x'_vallab = "" // start of #3
+	label variable `x'_vallab "``x'_lab' string"
+	levelsof `x', local(valrange)
+	foreach n of numlist `valrange' { 
+		local `x'_vallab_`n': label (`x') `n' // #2 from above
+		replace `x'_vallab = "``x'_vallab_`n''" if `x' == `n' // end of #3
+	}
+}
+
+
+gen Commune=""
+foreach  x  in `ADM3' {
+*	di strlower("`x'")
+*	di "`x'"
+    scalar yy=ustrregexra(strlower(ustrregexra (ustrnormalize( "`x'", "nfd" ) , "\p{Mark}", "" )), " ", "")
+	disp yy
+	replace Commune="`x'" if strrpos(commune_vallab, yy)>0 
+}
+tab commune_vallab if Commune==""
+>>>>>>> Stashed changes
