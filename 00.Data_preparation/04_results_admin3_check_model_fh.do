@@ -12,7 +12,7 @@ local graphs graphregion(color(white)) xsize(9) ysize(9)
 *===============================================================================
 // Direct estimates at admin level 3
 *===============================================================================
-use "$data\direct_survey_ehcvm_bfa_2021_geo_covariates_admin3.dta", clear //direct_survey_ehcvm_bfa_2021_province
+use "C:\Users\AHema\OneDrive - CGIAR\Desktop\Poverty Mapping\Small area estimation\Burkina Faso\Application of Fay-Herriot Model for Burkina Faso\00.Data\EHCVM data\BFA_2021_EHCVM-P_v02_M_Stata\direct_survey_ehcvm_bfa_2021_admin3.dta", clear //direct_survey_ehcvm_bfa_2021_province
 gen u_ci = fgt0+invnormal(0.975)*sqrt(dir_fgt0_var)
 gen l_ci = fgt0+invnormal(0.025)*sqrt(dir_fgt0_var)
 
